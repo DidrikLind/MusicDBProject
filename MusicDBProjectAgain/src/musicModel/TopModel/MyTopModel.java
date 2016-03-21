@@ -21,9 +21,7 @@ public class MyTopModel {
 
 	//Class to handle data from beans, by using the Managers.
 	
-
-	//TODO write shorter code!
-	public DefaultTableModel fetchTableData(SqlQry table, String searchStr) {
+	public DefaultTableModel fetchTableData(SqlQry sql, String searchStr) {
 		
 		//DefaultTableModel dm = new DefaultTableModel();
 		DefaultTableModel dm = new DefaultTableModel() {
@@ -36,14 +34,12 @@ public class MyTopModel {
 		String[] colonTitles = null;
 		Object[] rowData = null;
 		
-		switch(table) {
+		switch(sql) {
 			case ALBUM:
 				List<Album> albList = AlbumManager.searchAlbums(searchStr);
 				colonTitles = GeneralManager.getColonTitles("SELECT * FROM album");
 				addColonTitlesToTable(dm,colonTitles);
-				
 				rowData = new Object[3];
-				System.out.println(rowData.length);
 				for(int i=0; i<albList.size(); i++) {
 					rowData[0] = albList.get(i).getPkAlbumId();
 					rowData[1] = albList.get(i).getAlbumName();
@@ -55,7 +51,6 @@ public class MyTopModel {
 				List<Artist> artList = ArtistManager.searchArtists(searchStr);
 				colonTitles = GeneralManager.getColonTitles("SELECT * FROM artist");
 				addColonTitlesToTable(dm,colonTitles);
-				
 				rowData = new Object[3];
 				System.out.println(rowData.length);
 				for(int i=0; i<artList.size(); i++) {
@@ -70,7 +65,6 @@ public class MyTopModel {
 				colonTitles = GeneralManager.getColonTitles("SELECT * FROM track"); 
 				addColonTitlesToTable(dm,colonTitles);
 				rowData = new Object[7];
-				System.out.println(rowData.length);
 				for(int i=0; i<trkList.size(); i++) {
 					rowData[0] = trkList.get(i).getPkTrackId();
 					rowData[1] = trkList.get(i).getTrackName();
@@ -84,10 +78,9 @@ public class MyTopModel {
 				return dm;
 			case GENRE:
 				List<Genre> genList= GenreManager.searchGenres(searchStr);
-				colonTitles = GeneralManager.getColonTitles("SELECT * FROM genre"); //TODO change getColonTitles, to have input
+				colonTitles = GeneralManager.getColonTitles("SELECT * FROM genre");
 				addColonTitlesToTable(dm,colonTitles);
 				rowData = new Object[2];
-				System.out.println(rowData.length);
 				for(int i=0; i<genList.size(); i++) {
 					rowData[0] = genList.get(i).getPkGenreId();
 					rowData[1] = genList.get(i).getGenreName();
@@ -104,11 +97,10 @@ public class MyTopModel {
 		for(int i=0; i<colonTitles.length;i++)
 			dm.addColumn(colonTitles[i]);
 	}
-	
-	
-	public boolean addData(Table table, String[] addStuff) {
 		
-		switch(table) {
+	public boolean addData(SqlQry sql, String[] addStuff) {
+		
+		switch(sql) {
 			case ALBUM:
 				return AlbumManager.addAlbum(new Album(addStuff[1],Integer.parseInt(addStuff[2]))); 
 			case ARTIST:
@@ -125,8 +117,8 @@ public class MyTopModel {
 		}
 	}
 
-	public boolean updateData(Table table, String[] updateStuff) {
-		switch(table) {
+	public boolean updateData(SqlQry sql, String[] updateStuff) {
+		switch(sql) {
 		case ALBUM:
 			return AlbumManager.updateAlbum(new Album(Integer.parseInt(updateStuff[0]), updateStuff[1],Integer.parseInt(updateStuff[2]))); 
 		case ARTIST:
@@ -143,8 +135,8 @@ public class MyTopModel {
 		}
 	}
 	
-	public boolean deleteData(Table table, String[] deleteStuff) {
-		switch(table) {
+	public boolean deleteData(SqlQry sql, String[] deleteStuff) {
+		switch(sql) {
 		case ALBUM:
 			return AlbumManager.deleteAlbum(Integer.parseInt(deleteStuff[0])); 
 		case ARTIST:
@@ -159,9 +151,7 @@ public class MyTopModel {
 		}
 	}
 
-	//TODO this one shall hopefully use GeneralManager, the general of them all, YARR! :)
 	public DefaultTableModel fetchSpecificTableData(SqlQry sql, String searchStr) {
-		
 		//DefaultTableModel dm = new DefaultTableModel();
 		DefaultTableModel dm = new DefaultTableModel() {
 			//making ALL cells uneditable for user.
@@ -172,62 +162,60 @@ public class MyTopModel {
 		};
 		String[] colonTitles = null;
 		Object[][] array = null;
-		int numOfRows, numOfColons;
-		//TODO add more default joins. :O
 		switch(sql) {
 			case JOIN1:
-				array = GeneralManager.joinTables(sql.JOIN1.getQry(), searchStr);
-				numOfRows = array.length;
-				numOfColons = array[0].length;
-				System.out.println("numOFRows in topmodel: " + numOfRows);
-				System.out.println("numOfCols in topmode: " + numOfColons);
-				printTestArray(array);
+				array = GeneralManager.qryTables(sql.JOIN1.getQry(), searchStr);
 				colonTitles = GeneralManager.getColonTitles(sql.JOIN1.getQry());
-				
-				
-				//inserting colonTitles
 				addColonTitlesToTable(dm,colonTitles);	
-				//inserting rows.
-				for(int r=0; r<numOfRows; r++) {
-					dm.insertRow(r, array[r]);
-				}
+				insertRowsToTable(dm,array);
 				return dm;
 			case JOIN2:
-				array = GeneralManager.joinTables(sql.JOIN2.getQry(), searchStr);
-				numOfRows = array.length;
-				numOfColons = array[0].length;
-				System.out.println("numOFRows in topmodel: " + numOfRows);
-				System.out.println("numOfCols in topmode: " + numOfColons);
-				printTestArray(array);
+				array = GeneralManager.qryTables(sql.JOIN2.getQry(), searchStr);
 				colonTitles = GeneralManager.getColonTitles(sql.JOIN2.getQry());
-				
-				//inserting colonTitles
 				addColonTitlesToTable(dm,colonTitles);	
-				//inserting rows.
-				for(int r=0; r<numOfRows; r++) {
-					dm.insertRow(r, array[r]);
-				}
+				insertRowsToTable(dm,array);
 				return dm;
-			case CSTM:
-				array = GeneralManager.joinTables(sql.CSTM.getQry(), searchStr);
-				numOfRows = array.length;
-				numOfColons = array[0].length;
-				System.out.println("numOFRows in topmodel: " + numOfRows);
-				System.out.println("numOfCols in topmode: " + numOfColons);
-				printTestArray(array);
-				colonTitles = GeneralManager.getColonTitles(sql.CSTM.getQry());
-				
-				//inserting colonTitles
+			case ALBUM:
+				array = GeneralManager.qryTables(sql.ALBUM.getQry(), searchStr);
+				colonTitles = GeneralManager.getColonTitles(sql.ALBUM.getQry());
 				addColonTitlesToTable(dm,colonTitles);	
-				//inserting rows.
-				for(int r=0; r<numOfRows; r++) {
-					dm.insertRow(r, array[r]);
-				}
+				insertRowsToTable(dm,array);
+				return dm;	
+			case ARTIST:
+				array = GeneralManager.qryTables(sql.ARTIST.getQry(), searchStr);
+				colonTitles = GeneralManager.getColonTitles(sql.ARTIST.getQry());
+				addColonTitlesToTable(dm,colonTitles);	
+				insertRowsToTable(dm,array);
+				return dm;	
+			case TRACK:
+				array = GeneralManager.qryTables(sql.TRACK.getQry(), searchStr);
+				colonTitles = GeneralManager.getColonTitles(sql.TRACK.getQry());
+				addColonTitlesToTable(dm,colonTitles);	
+				insertRowsToTable(dm,array);
+				return dm;	
+			case GENRE:
+				array = GeneralManager.qryTables(sql.GENRE.getQry(), searchStr);
+				colonTitles = GeneralManager.getColonTitles(sql.GENRE.getQry());
+				addColonTitlesToTable(dm,colonTitles);	
+				insertRowsToTable(dm,array);
+				return dm;	
+			case CSTM:
+				array = GeneralManager.qryTables(sql.CSTM.getQry(), searchStr);
+				colonTitles = GeneralManager.getColonTitles(sql.CSTM.getQry());
+				addColonTitlesToTable(dm,colonTitles);	
+				insertRowsToTable(dm,array);
 				return dm;	
 		}
 		
 		return null;
 		
+	}
+	
+	private void insertRowsToTable(DefaultTableModel dm, Object[][] array) {
+		int numOfRows = array.length;
+		for(int r=0; r<numOfRows; r++) {
+			dm.insertRow(r, array[r]);
+		}
 	}
 	
 	private  void printTestArray(Object[][] array) {
@@ -239,8 +227,5 @@ public class MyTopModel {
 				System.out.print(array[r][c]);
 			}
 		}
-		//System.out.println(array);
 	}
-	
-	
 }

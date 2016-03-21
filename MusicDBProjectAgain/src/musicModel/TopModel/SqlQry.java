@@ -1,5 +1,5 @@
 package musicModel.TopModel;
-//TODO, develop together with GeneralManager class.
+
 public enum SqlQry {
 	JOIN1("SELECT track_name,artist_name, album_name, genre_name, track_time FROM track t"
 			+ " INNER JOIN artist art ON t.fk_artist_id = art.pk_artist_id"

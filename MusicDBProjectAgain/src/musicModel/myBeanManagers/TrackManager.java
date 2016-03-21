@@ -13,24 +13,20 @@ import javax.swing.table.DefaultTableModel;
 
 import musicModel.MyBeans.Track;
 import Connection.MyJDBCCloser;
-import Connection.MyJDBCConnector;
+import Connection.MyJDBConnector;
 
 
 
 
 public class TrackManager {
 
-	private static Connection conn = MyJDBCConnector.getJDBCConnection();
+	private static Connection conn = MyJDBConnector.getJDBCConnection();
 	
-	//pk_track_id, track_name, track_time, fk_artist_id, fk_album_id, release_date
 	public static Track getTrack(int pkTrackId) {
-		
 		String sql = "SELECT * FROM track WHERE pk_track_id=?";
 		Track trk = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		
-		//pk_album_id, album_name, fk_artist_id
 		try {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, pkTrackId);
@@ -91,8 +87,6 @@ public class TrackManager {
 		}
 	}
 	
-	
-	//pk_track_id, track_name, track_time, fk_artist_id, fk_album_id, release_date
 	public static boolean updateTrack(Track trk) {
 		boolean isUpdated = true;
 		int affectedRows = 0;
@@ -134,7 +128,6 @@ public class TrackManager {
 		}
 	}
 	
-	//pk_track_id, track_name, track_time, fk_artist_id, fk_album_id, release_date
 	public static boolean addTrack(Track trk) {
 		boolean isAdded = true;
 		int affectedRows = 0;
@@ -170,7 +163,6 @@ public class TrackManager {
 		}
 	}
 	
-	//pk_track_id, track_name, track_time, fk_artist_id, fk_album_id, release_date
 	public static boolean deleteTrack(int pkTrackId) {
 
 		boolean isDeleted = true;
@@ -196,17 +188,13 @@ public class TrackManager {
 		}
 	}
 
-	//nytt sens thai
 	public static List<Track> searchTracks(String trackName) {
 		List<Track> trackList = new ArrayList<>();
 		String sql = "SELECT * FROM track WHERE track_name LIKE ?";
 		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		
+		ResultSet rs = null;	
 		try {
 			pstmt = conn.prepareStatement(sql);
-			// to get all names with this string in it. We might add two methods;
-			//one for prefix and one for containing.
 			pstmt.setString(1, trackName+"%"); 
 			rs = pstmt.executeQuery();
 			System.out.println("HEJ inne i try");

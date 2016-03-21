@@ -13,17 +13,15 @@ import javax.swing.table.DefaultTableModel;
 
 import musicModel.MyBeans.Album;
 import Connection.MyJDBCCloser;
-import Connection.MyJDBCConnector;
+import Connection.MyJDBConnector;
 
 
 
 
 public class AlbumManager {
 
-	private static Connection conn = MyJDBCConnector.getJDBCConnection();
-	
-	
-	
+	private static Connection conn = MyJDBConnector.getJDBCConnection();
+
 	public static Album getAlbum(int pkAlbumId) {
 		
 		String sql = "SELECT * FROM album WHERE pk_album_id=?";
@@ -31,8 +29,7 @@ public class AlbumManager {
 		
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		
-		//pk_album_id, album_name, fk_artist_id
+
 		try {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, pkAlbumId);
@@ -55,14 +52,11 @@ public class AlbumManager {
 		return alb;
 	}
 	
-	//nytt sens thai
 	public static List<Album> getAllAlbums() {
 		List<Album> albumList = new ArrayList<>();
 		String sql = "SELECT * FROM album";
 		Statement stmt = null;
 		ResultSet rs = null;
-		
-		
 		try {
 			stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
 					ResultSet.CONCUR_READ_ONLY);
@@ -84,7 +78,6 @@ public class AlbumManager {
 		return albumList;
 	}
 		
-	//pk_album_id, album_name, fk_artist_id
 	public static boolean updateAlbum(Album alb) {
 		boolean isUpdated = true;
 		int affectedRows = 0;	
@@ -120,7 +113,6 @@ public class AlbumManager {
 		}
 	}
 	
-	//pk_album_id, album_name, fk_artist_id
 	public static boolean addAlbum(Album alb) {
 		boolean isAdded = true;
 		int affectedRows = 0;
@@ -157,8 +149,7 @@ public class AlbumManager {
 		boolean isDeleted = true;
 		int affectedRows = 0;
 		PreparedStatement pstmt = null;
-
-			String sql = "DELETE FROM album WHERE pk_album_id=?";
+		String sql = "DELETE FROM album WHERE pk_album_id=?";
 			try {
 				pstmt = conn.prepareStatement(sql);
 				pstmt.setInt(1, pkAlbumId);
@@ -186,14 +177,10 @@ public class AlbumManager {
 		String sql = "SELECT * FROM album WHERE album_name LIKE ?";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		
 		try {
 			pstmt = conn.prepareStatement(sql);
-			// to get all names with this string in it. We might add two methods;
-			//one for prefix and one for containing.
 			pstmt.setString(1, albumName+"%"); 
 			rs = pstmt.executeQuery();
-			
 			while(rs.next()) {
 				Album alb = new Album();
 				alb.setPkAlbumId(rs.getInt("pk_album_id"));
@@ -210,36 +197,4 @@ public class AlbumManager {
 		}
 		return albumList;
 	}
-
-	
-	//TODO keep developing this method, it should be coolish called from TopModel class!
-	public static List<Album> joiningblabla(String sql, String searchStr) {
-		List<Album> albumList = new ArrayList<>();
-//		String sql =
-//		"SELECT album_name, artist_name FROM album INNER JOIN artist"
-//		+ " ON fk_artist_id = pk_artist_id";
-		Statement stmt = null;
-		ResultSet rs = null;
-		
-		try {
-			stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
-					ResultSet.CONCUR_READ_ONLY);
-			rs = stmt.executeQuery(sql);
-			while(rs.next()) {
-				Album alb = new Album();
-				alb.setPkAlbumId(rs.getInt("pk_album_id"));
-				alb.setAlbumName(rs.getString("album_name"));
-				alb.setFkArtistId(rs.getInt("fk_artist_id"));		
-				albumList.add(alb);	
-			}		
-		} catch (SQLException e) {
-			System.err.println("Error message: " + e.getMessage());
-			System.err.println("Error code: " +e.getErrorCode());
-			System.err.println("SQL state: " +e.getSQLState());	
-		}finally {
-			MyJDBCCloser.close(rs, stmt);
-		}
-		return albumList;
-	}
-
 }

@@ -17,13 +17,13 @@ import java.util.List;
 import javax.swing.table.DefaultTableModel;
 
 import Connection.MyJDBCCloser;
-import Connection.MyJDBCConnector;
+import Connection.MyJDBConnector;
 import musicModel.MyBeans.Artist;
 
 
 public class ArtistManager {
 	
-	private static Connection conn = MyJDBCConnector.getJDBCConnection();
+	private static Connection conn = MyJDBConnector.getJDBCConnection();
 	
 	public static Artist getArtist(int pkArtistId) {
 		
@@ -51,14 +51,11 @@ public class ArtistManager {
 		return art;
 	}
 	
-	//nytt sens thai.
 	public static List<Artist> getAllArtists() {
-
 		List<Artist> artistList = new ArrayList<>();
 		String sql = "SELECT * FROM artist";
 		Statement stmt = null;
 		ResultSet rs = null;
-		
 		try {
 			stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
 					ResultSet.CONCUR_READ_ONLY);
@@ -80,6 +77,7 @@ public class ArtistManager {
 		}
 		return artistList;
 	}
+	
 	public static boolean updateArtist(Artist art) {
 		boolean isUpdated = true;
 		int affectedRows = 0;
@@ -88,8 +86,7 @@ public class ArtistManager {
 			return !isUpdated;
 		}
 		else {
-			String sql = "UPDATE artist SET artist_name=?, country=? WHERE pk_artist_id=?";
-				
+			String sql = "UPDATE artist SET artist_name=?, country=? WHERE pk_artist_id=?";	
 			try {
 				pstmt = conn.prepareStatement(sql);
 				pstmt.setString(1, art.getArtistName());
@@ -175,18 +172,14 @@ public class ArtistManager {
 		}
 	}
 	
-	// a more generic function than "getAllArtists", just put in an empty string, and we h
-	//have the getAllArtists() function.
+	// a more generic function than "getAllArtists", just put in an empty string
 	public static List<Artist> searchArtists(String artistName) {
 		List<Artist> artistList = new ArrayList<>();
 		String sql = "SELECT * FROM artist WHERE artist_name LIKE ?";
 		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		
+		ResultSet rs = null;		
 		try {
 			pstmt = conn.prepareStatement(sql);
-			// to get all names with this string in it. We might add two methods;
-			//one for prefix and one for containing.
 			pstmt.setString(1, artistName+"%"); 
 			rs = pstmt.executeQuery();
 			System.out.println("HEJ inne i try");

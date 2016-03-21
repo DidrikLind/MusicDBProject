@@ -13,24 +13,22 @@ import javax.swing.table.DefaultTableModel;
 
 import musicModel.MyBeans.Album;
 import Connection.MyJDBCCloser;
-import Connection.MyJDBCConnector;
+import Connection.MyJDBConnector;
 
 
 
 
 public class GeneralManager {
 
-	private static Connection conn = MyJDBCConnector.getJDBCConnection();
+	private static Connection conn = MyJDBConnector.getJDBCConnection();
 	
 
 	
 	public static String[] getColonTitles(String sql) {
-		//String sql = "SELECT * FROM album";
 		String[] colonTitles = null;
 		Statement stmt = null;
 		ResultSet rs = null;
 		ResultSetMetaData rsmd = null;
-		//pk_album_id, album_name, fk_artist_id
 		try {
 			stmt = conn.createStatement();
 			stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
@@ -52,12 +50,8 @@ public class GeneralManager {
 	}
 
 	
-	//TODO keep developing this method, it should be coolish called from TopModel class!
-	public static Object[][] joinTables(String sql, String searchStr) {
+	public static Object[][] qryTables(String sql, String searchStr) {
 		Object[][] joinArray;
-//		String sql =
-//		"SELECT album_name, artist_name FROM album INNER JOIN artist"
-//		+ " ON fk_artist_id = pk_artist_id";
 		Statement stmt = null;
 		ResultSet rs = null;
 		
@@ -66,6 +60,7 @@ public class GeneralManager {
 					ResultSet.CONCUR_READ_ONLY);
 			rs = stmt.executeQuery(sql);
 			ResultSetMetaData rsmd = rs.getMetaData();
+			//ugly, but let be for now :)
 			int numOfColons = rsmd.getColumnCount();
 			rs.last();
 			int numOfRows = rs.getRow();
@@ -73,19 +68,9 @@ public class GeneralManager {
 			joinArray = new String[numOfRows][numOfColons];
 			int whichRow = 0;
 			while(rs.next()) {
-//				Album alb = new Album();
-//				alb.setPkAlbumId(rs.getInt("pk_album_id"));
-//				alb.setAlbumName(rs.getString("album_name"));
-//				alb.setFkArtistId(rs.getInt("fk_artist_id"));		
-//				albumList.add(alb);	
-				
 				//fill the join array up
 				for(int whichCol=0; whichCol<numOfColons; whichCol++) {
-					//System.out.println(rs.getObject(whichCol+1));
 					joinArray[whichRow][whichCol] = rs.getObject(whichCol+1) + "";
-					
-					//System.out.println(joinArray.getClass());
-					//System.out.println(joinArray[whichRow][whichCol]);
 				}
 				whichRow++;
 			}	
@@ -99,10 +84,6 @@ public class GeneralManager {
 		}finally {
 			MyJDBCCloser.close(rs, stmt);
 		}
-		//System.out.println(joinArray);
-		//return joinArray;
-		//return null;
 	}
-
 }
 

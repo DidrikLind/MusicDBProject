@@ -85,17 +85,11 @@ public class MyMainView extends JPanel {
 		joinTables = new JMenuItem("Query table data");
 		navigate.add(editTables);
 		navigate.add(joinTables);
-		
-		
-		
-		
-		
 	}
+	
 	private void makeCenterPanel() {
 		cPanel = new JPanel(new BorderLayout());	
 		JScrollPane cPanelScrollPane = new JScrollPane(cPanel);
-		
-		
 		String[] colonTitles = {"colon1", "colon2", "colon3", "colon4"};
 		Object[][] rowData = {
 			{"data1","data2","data3","data4"},
@@ -114,19 +108,15 @@ public class MyMainView extends JPanel {
 		add(cPanelScrollPane, BorderLayout.CENTER);
 	}
 	
-//	updateB, addB, deleteB, regenerateB;
 	private void makeNorthPanel() {
 		nPanel = new JPanel();
-		//nPanel.setLayout(new BoxLayout(nPanel,BoxLayout.X_AXIS));
 		crudBtns = new MyCustomButton[4];
 		crudBtns[0] = new MyCustomButton("ADD");
 		crudBtns[1] = new MyCustomButton("REGENERATE");
 		crudBtns[2] = new MyCustomButton("UPDATE");
-		crudBtns[3] = new MyCustomButton("DELETE");
-		
+		crudBtns[3] = new MyCustomButton("DELETE");	
 		for(int i=0;i<crudBtns.length;i++) 
 				nPanel.add(crudBtns[i]);
-	
 		add(nPanel, BorderLayout.NORTH);
 	}
 	
@@ -138,17 +128,14 @@ public class MyMainView extends JPanel {
 		searchField = new MyCustomTxtField("");
 		sPanel.add(searchB);
 		sPanel.add(searchField);
-
 		
-		//Table join view.
+		//Table query view.
 		qryB = new MyCustomButton("Qu£ry");
 		qryTxtArea = new JTextArea("Add your own query", 5, 20);
-		
 		
 		add(sPanel, BorderLayout.SOUTH);
 	}
 	
-//FIX*** make common JTextField and JLabel inner classes, to style the gui l8r.
 	private void makeEastPanel() {
 		ePanel = new JPanel();
 		
@@ -233,12 +220,10 @@ public class MyMainView extends JPanel {
 			ePanelGen.add(txtFieldsGen[i]);
 		}
 		
-		
 		//ePanelAlb, ePanelArt, ePanelTrk, ePanelGen OK
 		add(ePanel, BorderLayout.EAST);
 	}
 	
-	//ePanelAlb, ePanelArt, ePanelTrk, ePanelGen  will be the ones who will pend here.
 	public void switchEastPanel(JRadioButton rb) {
 		ePanel.removeAll();
 		switch(rb.getText()) {
@@ -255,8 +240,7 @@ public class MyMainView extends JPanel {
 				ePanel.add(ePanelGen, BorderLayout.EAST);
 				break;
 		}
-		ePanel.repaint();
-		ePanel.revalidate();
+		refreshView();
 	}
 
 	private void makeWestPanel() {
@@ -279,9 +263,8 @@ public class MyMainView extends JPanel {
 			wPanel.add(rbs[i]);
 		}	
 		
-		//Join table view.
-		cb = new JComboBox(new String[]{"JOIN1", "JOIN2"});
-		
+		//Query table view.
+		cb = new JComboBox(new String[]{"JOIN1", "JOIN2", "ALBUM", "ARTIST", "TRACK", "GENRE"});
 		
 		add(wPanel, BorderLayout.WEST);
 	}
@@ -289,38 +272,33 @@ public class MyMainView extends JPanel {
 	public void addRadioButtonListener(ActionListener actionListen) {
 		for(int i=0; i<rbs.length; i++) 
 			rbs[i].addActionListener(actionListen);
-	}
-	
+	}	
 	public void addTableMouseListener(MouseListener moutseListen) {
 		mainTable.addMouseListener(moutseListen);
 
-	}
-	
+	}	
 	public void addCRUDButtonsListener(ActionListener actionListen) {
 		for(int i=0; i<crudBtns.length;i++)
 			crudBtns[i].addActionListener(actionListen);
 	}
-	
 	public void addSearchButtonListener(ActionListener actionListen) {
 		searchB.addActionListener(actionListen);
 	}
-	
 	public void addMenjuBarListener(ActionListener actionListen) {
 		editTables.addActionListener(actionListen);
 		joinTables.addActionListener(actionListen);
-	}
-	
+	}	
 	public void addComboBokListener(ActionListener actionListen) {
 		cb.addActionListener(actionListen);
-	}
-	
+	}	
 	public void addQryButtonListener(ActionListener actionListen) {
 		qryB.addActionListener(actionListen);
-	}
-	
+	}	
+
 	public JTable getMainTable() {
 		return mainTable;
 	}
+	
 	public JPanel getEastPanel() {
 		return ePanel;
 	}
@@ -385,7 +363,6 @@ public class MyMainView extends JPanel {
 	public JComboBox getComboBox() {
 		return cb;
 	}
-	
 	public JTextArea getQryTxtArea() {
 		return qryTxtArea;
 	}
@@ -394,7 +371,7 @@ public class MyMainView extends JPanel {
 		this.revalidate();
 		this.repaint();
 	}
-	//TODO , hmm it wont respond as I want it to.
+	
 	public void displayEditTablePanels() {
 		//cPanel.removeAll();
 		ePanel.removeAll();
@@ -417,10 +394,7 @@ public class MyMainView extends JPanel {
 		for(int i=0; i<rbs.length; i++) {
 			wPanel.add(rbs[i]);
 		}	
-		
-
-		revalidate();
-		repaint();
+		refreshView();
 	}
 	
 	//TODO , hmm it wont respond as I want it to.
@@ -439,8 +413,7 @@ public class MyMainView extends JPanel {
 		sPanel.add(qryTxtArea);
 		sPanel.add(qryB);
 		
-		revalidate();
-		repaint();	
+		refreshView();
 	}
 	
 	private class MyCustomTxtField extends JTextField {

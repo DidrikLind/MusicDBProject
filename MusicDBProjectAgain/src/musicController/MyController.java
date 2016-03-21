@@ -19,12 +19,11 @@ import javax.swing.table.DefaultTableModel;
 
 import musicModel.TopModel.MyTopModel;
 import musicModel.TopModel.SqlQry;
-import musicModel.TopModel.Table;
 import musicView.MyMainView;
 
 
 
-public class MyController implements ActionListener {
+public class MyController {
 
 	MyMainView view;
 	MyTopModel topModel;
@@ -41,15 +40,6 @@ public class MyController implements ActionListener {
 		this.topModel = topModel;
 	}
 	
-
-	
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		//TODO
-		JTextArea tObj = (JTextArea) view.getQryTxtArea();
-		
-	}
-	
 	private class QryButtonListener implements ActionListener {
 
 		@Override
@@ -58,9 +48,7 @@ public class MyController implements ActionListener {
 			q.setQry(view.getQryTxtArea().getText());
 			JOptionPane.showMessageDialog(null, q.getQry());
 			view.getMainTable().setModel(topModel.fetchSpecificTableData(q.CSTM, "searchStr"));
-			
 		}
-		
 	}
 	
 	private class ComboBokListener implements ActionListener {
@@ -71,50 +59,45 @@ public class MyController implements ActionListener {
 			
 			JComboBox jObj = (JComboBox) aevt.getSource();
 			if(jObj.getSelectedIndex() == 0) {
-				//System.out.println("its join1, here its time to call view.getMainTable().setModel(topModel.fetchJoinData(SqlQry.JOIN1, 'searchStr'));");
 				view.getMainTable().setModel(topModel.fetchSpecificTableData(SqlQry.JOIN1, "searchStr"));
 				view.getQryTxtArea().setText(SqlQry.JOIN1.getQry());
 			}else if(jObj.getSelectedIndex() == 1) {
 				view.getMainTable().setModel(topModel.fetchSpecificTableData(SqlQry.JOIN2, "searchStr"));
 				view.getQryTxtArea().setText(SqlQry.JOIN2.getQry());
-				//System.out.println("its join2, here its time to call view.getMainTable().setModel(topModel.fetchJoinData(SqlQry.JOIN2, 'searchStr'));");
+			}else if(jObj.getSelectedIndex() == 2) {
+				view.getMainTable().setModel(topModel.fetchSpecificTableData(SqlQry.ALBUM, "searchStr"));
+				view.getQryTxtArea().setText(SqlQry.ALBUM.getQry());
+			}else if(jObj.getSelectedIndex() == 3) {
+				view.getMainTable().setModel(topModel.fetchSpecificTableData(SqlQry.ARTIST, "searchStr"));
+				view.getQryTxtArea().setText(SqlQry.ARTIST.getQry());
+			}else if(jObj.getSelectedIndex() == 4) {
+				view.getMainTable().setModel(topModel.fetchSpecificTableData(SqlQry.TRACK, "searchStr"));
+				view.getQryTxtArea().setText(SqlQry.TRACK.getQry());
+			}else if(jObj.getSelectedIndex() == 5) {
+				view.getMainTable().setModel(topModel.fetchSpecificTableData(SqlQry.JOIN2, "searchStr"));
+				view.getQryTxtArea().setText(SqlQry.GENRE.getQry());
 			}
 		}
 	}
-	//TODO switch betwen panels!
+
 	private class MenjuBarListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent aevt) {
-
 			JMenuItem mObj = (JMenuItem) aevt.getSource();
-			//System.out.println(mObj.getText());
-			if(mObj.getText().equals("Edit tables")) {
-				view.getMainTable().setModel(new DefaultTableModel()); // clear table
+			if(mObj.getText().equals("Edit tables"))
 				view.displayEditTablePanels();
-				System.out.println("hehe inne i edit table grejjen");
-			}else {
-				//TODO make GUI for these new joins. Example: let every join-option that
-				//you give the user be a radioButton on the new panel
-				//JOIN TABLES
-				//view.getMainTable().setModel(topModel.fetchJoinData(SqlQry.JOIN1, "searchStr"));
-				System.out.println("hehe inne i join grejjen");
+			else 
 				view.displayJoinTablePanels();
-				view.getMainTable().setModel(new DefaultTableModel()); // clear table
-
-			}
-			view.revalidate();
-			view.repaint();
+			view.getMainTable().setModel(new DefaultTableModel()); // clear table the ugly way :P
+			view.refreshView();
 		}
-		
 	}
 	
 	private class RadioButtonListener implements ActionListener {
 
 		@Override
-		public void actionPerformed(ActionEvent aevt) {
-			//jag vill ha ngt i stil med:
-			
+		public void actionPerformed(ActionEvent aevt) {	
 			JRadioButton rObj = (JRadioButton) aevt.getSource();
 			if(rObj.getText().equals("Albums")) {
 				view.getMainTable().setModel(topModel.fetchTableData(SqlQry.ALBUM, ""));
@@ -129,12 +112,11 @@ public class MyController implements ActionListener {
 			view.getMainTable().addMouseListener(new TableMouseListener());
 			//disables the user to move the colons.
 			view.getMainTable().getTableHeader().setReorderingAllowed(false);
-			
 			view.switchEastPanel(rObj);
 		}
 		
 	}
-	//TODO 
+
 	private class TableMouseListener extends MouseAdapter {
 		
 		private JTable table;
@@ -180,20 +162,19 @@ public class MyController implements ActionListener {
 			JButton bObj = (JButton) aevt.getSource();
 			JRadioButton rObj = view.getSelectedRb();
 				
-			//TODO add "addConfirm"-method just as deleteConfirm.
 			if(bObj.getText().equals("ADD")) {
 				if(addConfirm()) {
 					if(rObj.getText().equals("Albums")) {
-						addDialog(topModel.addData(Table.ALBUM,
+						addDialog(topModel.addData(SqlQry.ALBUM,
 							getGatheredStuff(view.getTxtFieldsAlb(), view.getTxtFieldsAlb().length)));
 					}else if(rObj.getText().equals("Artists")) {
-						addDialog(topModel.addData(Table.ARTIST,
+						addDialog(topModel.addData(SqlQry.ARTIST,
 							getGatheredStuff(view.getTxtFieldsArt(), view.getTxtFieldsArt().length)));		
 					}else if(rObj.getText().equals("Tracks")) {
-						addDialog(topModel.addData(Table.TRACK,
+						addDialog(topModel.addData(SqlQry.TRACK,
 							getGatheredStuff(view.getTxtFieldsTrk(), view.getTxtFieldsTrk().length)));	
 					}else {
-						addDialog(topModel.addData(Table.GENRE,
+						addDialog(topModel.addData(SqlQry.GENRE,
 							getGatheredStuff(view.getTxtFieldsGen(), view.getTxtFieldsGen().length)));	
 					}
 				}else {
@@ -201,22 +182,19 @@ public class MyController implements ActionListener {
 				}
 			}else if(bObj.getText().equals("REGENERATE")) {
 				//TODO, no functionality yet, add thisd l8r
-				
-				
-			//TODO add "updateConfirm" method just as deleteConfirm beneath.	
 			}else if(bObj.getText().equals("UPDATE")) {
 				if(updateConfirm()) {
 					if(rObj.getText().equals("Albums")) {
-						updateDialog(topModel.updateData(Table.ALBUM,
+						updateDialog(topModel.updateData(SqlQry.ALBUM,
 							getGatheredStuff(view.getTxtFieldsAlb(), view.getTxtFieldsAlb().length)));
 					}else if(rObj.getText().equals("Artists")) {
-						updateDialog(topModel.updateData(Table.ARTIST,
+						updateDialog(topModel.updateData(SqlQry.ARTIST,
 							getGatheredStuff(view.getTxtFieldsArt(), view.getTxtFieldsArt().length)));		
 					}else if(rObj.getText().equals("Tracks")) {
-						updateDialog(topModel.updateData(Table.TRACK,
+						updateDialog(topModel.updateData(SqlQry.TRACK,
 							getGatheredStuff(view.getTxtFieldsTrk(), view.getTxtFieldsTrk().length)));	
 					}else {
-						updateDialog(topModel.updateData(Table.GENRE,
+						updateDialog(topModel.updateData(SqlQry.GENRE,
 							getGatheredStuff(view.getTxtFieldsGen(), view.getTxtFieldsGen().length)));	
 					}
 				}else {
@@ -225,25 +203,22 @@ public class MyController implements ActionListener {
 			}else {//Deletation.
 				if(deleteConfirm()) {
 					if(rObj.getText().equals("Albums")) {
-						deleteDialog(topModel.deleteData(Table.ALBUM, 
+						deleteDialog(topModel.deleteData(SqlQry.ALBUM, 
 							getGatheredStuff(view.getTxtFieldsAlb(), view.getTxtFieldsAlb().length)));
 					}else if(rObj.getText().equals("Artists")) {
-						deleteDialog(topModel.deleteData(Table.ARTIST,
+						deleteDialog(topModel.deleteData(SqlQry.ARTIST,
 							getGatheredStuff(view.getTxtFieldsArt(), view.getTxtFieldsArt().length)));
 					}else if(rObj.getText().equals("Tracks")) {
-						deleteDialog(topModel.deleteData(Table.TRACK, 
+						deleteDialog(topModel.deleteData(SqlQry.TRACK, 
 							getGatheredStuff(view.getTxtFieldsTrk(), view.getTxtFieldsTrk().length)));
 					}else {
-						deleteDialog(topModel.deleteData(Table.GENRE, 
+						deleteDialog(topModel.deleteData(SqlQry.GENRE, 
 							getGatheredStuff(view.getTxtFieldsGen(), view.getTxtFieldsGen().length)));
 					}
 				}else {
 					JOptionPane.showMessageDialog(null, "Data was not deleted");
 				}
 			}
-
-//			view.getMainTable().repaint();
-//			view.getMainTable().revalidate();
 			view.refreshView();
 		}
 		
@@ -313,7 +288,6 @@ public class MyController implements ActionListener {
 		}
 	}
 	
-	//TODO ***fix: its very similar to RadioButtonListener class, repeated code can be done better! :)
 	private class SearchButtonListener implements ActionListener {
 
 		@Override

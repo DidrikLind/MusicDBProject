@@ -13,22 +13,20 @@ import javax.swing.table.DefaultTableModel;
 
 import musicModel.MyBeans.Genre;
 import Connection.MyJDBCCloser;
-import Connection.MyJDBCConnector;
+import Connection.MyJDBConnector;
 
 
 
 
 public class GenreManager {
 
-	private static Connection conn = MyJDBCConnector.getJDBCConnection();
+	private static Connection conn = MyJDBConnector.getJDBCConnection();
 	
 	public static Genre getGenre(int pkGenreId) {
-		
 		String sql = "SELECT * FROM genre WHERE pk_genre_id=?";
 		Genre gen = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;	
-		//pk_album_id, album_name, fk_artist_id
 		try {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, pkGenreId);
@@ -52,8 +50,7 @@ public class GenreManager {
 		List<Genre> genreList = new ArrayList<>();
 		String sql = "SELECT * FROM genre";
 		Statement stmt = null;
-		ResultSet rs = null;
-		
+		ResultSet rs = null;	
 		try {
 			stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
 					ResultSet.CONCUR_READ_ONLY);
@@ -82,8 +79,7 @@ public class GenreManager {
 			return !isUpdated;
 		}
 		else {
-			String sql = "UPDATE genre SET genre_name=? WHERE pk_genre_id=?";
-				
+			String sql = "UPDATE genre SET genre_name=? WHERE pk_genre_id=?";			
 			try {
 				pstmt = conn.prepareStatement(sql);
 				pstmt.setString(1, gen.getGenreName());
@@ -143,8 +139,7 @@ public class GenreManager {
 	public static boolean deleteGenre(int pkGenreId) {
 		boolean isDeleted = true;
 		int affectedRows = 0;
-		PreparedStatement pstmt = null;
-		
+		PreparedStatement pstmt = null;	
 		String sql = "DELETE FROM genre WHERE pk_genre_id=?";
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -168,17 +163,13 @@ public class GenreManager {
 		}
 	}
 
-
 	public static List<Genre> searchGenres(String genreName) {
 		List<Genre> genreList = new ArrayList<>();
 		String sql = "SELECT * FROM genre WHERE genre_name LIKE ?";
 		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		
+		ResultSet rs = null;		
 		try {
 			pstmt = conn.prepareStatement(sql);
-			// to get all names with this string in it. We might add two methods;
-			//one for prefix and one for containing.
 			pstmt.setString(1, genreName+"%"); 
 			rs = pstmt.executeQuery();
 			System.out.println("HEJ inne i try");
