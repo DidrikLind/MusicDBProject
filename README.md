@@ -3,6 +3,7 @@ AUTHORS: Didrik Lind & Thai Pham<br>
 
 PROJECT:<br>
 Java, JDBC, MySQL<br>
+We have used MVC and DAO design pattern in order to implement a visualization of a music database with 4 tables: Album, Artist, Track and Genre.
 <br>
 *******Task*******
 <br>
@@ -18,6 +19,6 @@ Java, JDBC, MySQL<br>
 *fulfill normalforms [ok] <br>
 *atleast two foreign keys [ok] <br>
 <-:(GUI):-> <br>
-*fulfill CRUD <br>
-*have some sort of selection functionality <br>
-*have some sort of search functionality
+*fulfill CRUD [ok] <br>
+*have some sort of selection functionality [ok] <br>
+*have some sort of search functionality [ok]
