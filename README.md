@@ -1,12 +1,11 @@
 # MusicDBProject<br>
 AUTHORS: Didrik Lind & Thai Pham<br>
 
-PROJECT:<br>
-Java, JDBC, MySQL<br>
-We have used MVC and DAO design pattern in order to implement a visualization of a music database with 4 tables: Album, Artist, Track and Genre.
+**Short project description**<br>
+Java, JDBC and MySQL is the main point of this project.<br>
+We have used MVC and DAO design pattern in order to implement a visualization(gui) of a music database with 4 tables: Album, Artist, Track and Genre.
 <br>
-*******Task*******
-<br>
+**Task:**
 <br>
 **Method**
 *pair-programming [ok] <br>
